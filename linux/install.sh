@@ -80,6 +80,9 @@ curl -fsSL https://bun.sh/install | bash
 # [Ollama]
 curl -fsSL https://ollama.com/install.sh | sh
 
+ollama pull 
+ollama rm 
+
 # [Docker engine]
 sudo apt update
 sudo apt install ca-certificates curl
@@ -100,6 +103,37 @@ sudo apt update
 
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+sudo groupadd docker
+
+sudo usermod -aG docker $USER
+
 # [Other deps]
 sudo apt update
 sudo apt install libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxinerama-dev libxrandr-dev libxi-dev
+
+# Container
+## Portainer
+docker volume create portainer_data
+docker run -d \
+  -p 8000:8000 \
+  -p 9443:9443 \
+  --name portainer \
+  --restart=always \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v portainer_data:/data \
+  portainer/portainer-ce:sts
+## Redis-stack
+docker run -d --name redis-stack \
+  -p 6379:6379 \
+  -p 8001:8001 \
+  --restart always \
+  redis/redis-stack:7.4.0-v8-x86_64
+## Neo4j
+docker run \
+    --name my-neo4j \
+    -p 7474:7474 -p 7687:7687 \
+    -v $HOME/neo4j/data:/data \
+    --env NEO4J_AUTH=neo4j/12345678 \
+    --restart always \
+    -d \
+    neo4j:5.26.25-community-trixie
