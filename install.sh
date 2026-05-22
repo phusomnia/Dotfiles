@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # [Firmware]
 sudo apt update && sudo apt install firmware-linux-nonfree alsa-utils -y
 
@@ -104,13 +103,3 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 # [Other deps]
 sudo apt update
 sudo apt install libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxinerama-dev libxrandr-dev libxi-dev
-=======
-#!/usr/bin/env bash
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-source "$SCRIPT_DIR/scripts/core.sh"
-source "$SCRIPT_DIR/scripts/menu.sh"
-
-menu
->>>>>>> 821f753 (update)
