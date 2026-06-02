@@ -1,39 +1,62 @@
-go_info() {
-  echo "Go: $(go version 2>/dev/null || echo 'not installed')"
-}
-
-go_init_module() {
-  local dir="${1:-.}"
-  local module_name="${2:-}"
+go_demo_pipeline() {
+  local dir="${1:-demo/go}"
 
   if [ ! -d "$dir" ]; then
     logger_error "Directory does not exist: $dir"
     return 1
   fi
 
-  (
-    cd "$dir" || exit 1
+  dir="$(realpath "$dir")"
 
-    local default_module
-    default_module="$(basename "$(pwd)")"
+  logger_info "Pipeline: $dir — 4 stages"
 
-    if [ -z "$module_name" ]; then
-      read -p "Enter module name [$default_module]: " module_name
-      module_name="${module_name:-$default_module}"
+  # Stage 1: init
+  logger_info "Stage 1/4: init — go mod init"
+  go_init_module "$dir" "demo" || return 1
+
+  # Stage 2: install
+  logger_info "Stage 2/4: install — go mod tidy"
+  go_install_deps "$dir" "" || return 1
+
+  # Stage 3: build
+  logger_info "Stage 3/4: build"
+  go_build "$dir" "bin/demo" || return 1
+
+  # Stage 4: run
+  logger_info "Stage 4/4: run"
+  go_run_src "$dir" "./src" || return 1
+
+  logger_success "Pipeline complete: $dir"
+}
+
+go_info() {
+  echo "Go: $(go version 2>/dev/null || echo 'not installed')"
+}
+
+go_init_module() {
+  local path_module="${1:-.}"
+  local name_module="${2}"
+
+  if [ ! -d "$path_module" ]; then
+    logger_error "Directory does not exist: $path_module"
+    return 1
+  fi
+
+  cd "$path_module" || return 1
+
+  if [ -f "go.mod" ]; then
+    logger_info "go.mod already exists"
+    return 0
+  fi
+
+  if [ -z "$name_module" ]; then
+    name_module="$(basename "$(pwd)")"
+    if [ "$name_module" = "go" ]; then
+      name_module="$(basename "$(dirname "$(pwd)")")"
     fi
+  fi
 
-    if [ -z "$module_name" ]; then
-      logger_error "Module name cannot be empty"
-      return 1
-    fi
-
-    if [ "$module_name" = "go" ]; then
-      logger_error "Module path 'go' is reserved by Go toolchain"
-      return 1
-    fi
-
-    go mod init "$module_name"
-  )
+  go mod init "$name_module"
 }
 
 go_install_deps() {

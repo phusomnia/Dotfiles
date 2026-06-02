@@ -4,28 +4,58 @@
 
 ```
 scripts/
-├── core.sh              # Colors, logger, spinner, platform, terminal utils
 ├── Scripts.md           # This file
+├── kernel/
+│   └── core.sh          # Colors, logger, spinner, platform, terminal utils
 ├── tui/
-│   ├── ui.sh            # fzf menu UI
-│   ├── tui_manager.sh   # Single-run TUI (no loop)
-│   └── router.sh        # Route commands to plugins
+│   ├── ui.sh            # fzf menu UI wrapper
+│   ├── tui_manager.sh   # Two-level category navigator (parses menu.txt)
+│   └── menu.txt         # Menu data: ## headers = categories, items = commands
 └── plugins/
-    ├── system.sh        # system_info
-    ├── git.sh           # git_status, git_add, git_commit, git_push, git_rename_main
-    ├── nodejs.sh        # nodejs_info
-    ├── bun.sh           # bun_info
-    ├── python.sh        # python_info
-    ├── go.sh            # go_info, run_server
-    ├── dotnet.sh        # dotnet_info
-    ├── nim.sh           # nim_info
-    └── docker.sh        # docker_info
+    ├── system.sh        # system script
+    ├── git.sh           # git script
+    ├── python.sh        # python script
+    ├── docker.sh        # docker script
+    ├── nodejs.sh        # nodejs script
+    ├── bun.sh           # bun script
+    ├── go.sh            # go script
+    ├── dotnet.sh        # dotnet script
+    ├── nim.sh           # nim script
+    ├── voxel-engine.sh  # voxel engine script
+    ├── voxel-server.sh  # voxel server script
+    └── debian.sh        # debian script
 ```
 
-## Usage
+## How it works
 
-```bash
-./script.sh
+`./script.sh` sources all `.sh` files from `kernel/`, `tui/`, and `plugins/`, then calls `tui_run()`.
+
+### Menu flow
+
+```
+Categories → pick one → sub-commands → back/Esc → categories
+                                        → execute → exit
 ```
 
-Opens a fzf menu. Select a command to run. Exits after execution.
+1. Reads `menu.txt` — lines starting with `##` are category headers, others are commands
+2. Shows categories in fzf (`exit` to quit)
+3. Pick a category → shows its sub-commands
+4. `back` / `Esc` returns to categories; pick a command → execute → exit
+
+### menu.txt format
+
+```
+## Category Name
+command_name
+another_command
+
+## Next Category
+some_command
+```
+
+Lines starting with `##` become category items in the top-level fzf menu. Non-blank lines under each header become the sub-commands for that category.
+
+### Adding a command
+
+1. Add the item name to `menu.txt` under the appropriate `##` category
+2. Define the function in the corresponding plugin file under `scripts/plugins/`
