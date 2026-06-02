@@ -1,0 +1,78 @@
+tui_run() {
+  local choice
+
+  choice=$(
+    ui_fzf_menu "Main Menu" \
+      "## System" \
+      "system_info" \
+      "## Git" \
+      "git_status" \
+      "git_add" \
+      "git_commit" \
+      "git_push" \
+      "git_rename_main" \
+      "## Python" \
+      "python_info" \
+      "## Docker" \
+      "docker_info" \
+      "## Node" \
+      "nodejs_info" \
+      "## Bun" \
+      "bun_info" \
+      "## Go" \
+      "go_info" \
+      "go_init_module" \
+      "go_install_deps" \
+      "create_api_spec" \
+      "clear_deps" \
+      "## Voxel Engine" \
+      "voxel_engine_info" \
+      "voxel_engine_init" \
+      "voxel_engine_install" \
+      "voxel_engine_build" \
+      "voxel_engine_run" \
+      "voxel_engine_clear_deps" \
+      "## Voxel Server" \
+      "voxel_server_info" \
+      "voxel_server_init" \
+      "voxel_server_install" \
+      "voxel_server_run" \
+      "voxel_server_dev" \
+      "voxel_server_clear" \
+      "## .NET" \
+      "dotnet_info" \
+      "## Nim" \
+      "nim_info" \
+      "## Debian Setup" \
+      "debian_pipeline" \
+      "debian_install_firmware" \
+      "debian_install_wm" \
+      "debian_install_audio" \
+      "debian_install_browser" \
+      "debian_install_code" \
+      "debian_install_windsurf" \
+      "debian_install_network" \
+      "debian_install_terminal" \
+      "debian_install_bar" \
+      "debian_install_search" \
+      "debian_install_image" \
+      "debian_install_dotnet" \
+      "debian_install_java" \
+      "debian_install_nim" \
+      "debian_install_go" \
+      "debian_install_bun" \
+      "debian_install_ollama" \
+      "debian_install_docker" \
+      "debian_install_deps" \
+      "exit"
+  )
+
+  [[ -z "$choice" ]] && return
+
+  case "$choice" in
+    "##"*) return ;;
+    "exit") return ;;
+  esac
+
+  router_exec "$choice"
+}

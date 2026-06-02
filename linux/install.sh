@@ -74,6 +74,11 @@ tar -C ~/.go -xzf ~/.go/go.tar.gz
 echo 'export PATH=$PATH:$HOME/.go/go/bin' >> ~/.bashrc
 source ~/.bashrc
 
+# [Php]
+php_installation_pipeline() {
+
+}
+
 # [Bun]
 curl -fsSL https://bun.sh/install | bash
 
