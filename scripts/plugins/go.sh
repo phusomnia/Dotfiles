@@ -2,31 +2,31 @@ go_demo_pipeline() {
   local dir="${1:-demo/go}"
 
   if [ ! -d "$dir" ]; then
-    logger_error "Directory does not exist: $dir"
+    log_error "Directory does not exist: $dir"
     return 1
   fi
 
   dir="$(realpath "$dir")"
 
-  logger_info "Pipeline: $dir — 4 stages"
+  log_info "Pipeline: $dir — 4 stages"
 
   # Stage 1: init
-  logger_info "Stage 1/4: init — go mod init"
+  log_info "Stage 1/4: init — go mod init"
   go_init_module "$dir" "demo" || return 1
 
   # Stage 2: install
-  logger_info "Stage 2/4: install — go mod tidy"
+  log_info "Stage 2/4: install — go mod tidy"
   go_install_deps "$dir" "" || return 1
 
   # Stage 3: build
-  logger_info "Stage 3/4: build"
+  log_info "Stage 3/4: build"
   go_build "$dir" "bin/demo" || return 1
 
   # Stage 4: run
-  logger_info "Stage 4/4: run"
+  log_info "Stage 4/4: run"
   go_run_src "$dir" "./src" || return 1
 
-  logger_success "Pipeline complete: $dir"
+  log_success "Pipeline complete: $dir"
 }
 
 go_info() {
@@ -38,14 +38,14 @@ go_init_module() {
   local name_module="${2}"
 
   if [ ! -d "$path_module" ]; then
-    logger_error "Directory does not exist: $path_module"
+    log_error "Directory does not exist: $path_module"
     return 1
   fi
 
   cd "$path_module" || return 1
 
   if [ -f "go.mod" ]; then
-    logger_info "go.mod already exists"
+    log_info "go.mod already exists"
     return 0
   fi
 
@@ -64,24 +64,24 @@ go_install_deps() {
   local deps_file="${2:-dependencies}"
 
   if [ ! -d "$dir" ]; then
-    logger_error "Directory does not exist: $dir"
+    log_error "Directory does not exist: $dir"
     return 1
   fi
 
   (
     cd "$dir" || exit 1
 
-    logger_info "Installing Go dependencies..."
+    log_info "Installing Go dependencies..."
 
     go mod tidy
     if [ $? -eq 0 ]; then
-      logger_success "Dependencies installed"
+      log_success "Dependencies installed"
     else
-      logger_error "Failed to install dependencies"
+      log_error "Failed to install dependencies"
     fi
 
     if [ -f "$deps_file" ]; then
-      logger_info "Installing Go tools from $deps_file..."
+      log_info "Installing Go tools from $deps_file..."
 
       while IFS= read -r pkg || [ -n "$pkg" ]; do
         pkg="$(echo "$pkg" | xargs)"
@@ -89,7 +89,7 @@ go_install_deps() {
         [ -z "$pkg" ] && continue
         [[ "${pkg#\#}" != "$pkg" ]] && continue
 
-        logger_info "  Installing $pkg..."
+        log_info "  Installing $pkg..."
 
         if [[ "$pkg" == */cmd/* ]]; then
           go install "$pkg"
@@ -98,9 +98,9 @@ go_install_deps() {
         fi
 
         if [ $? -eq 0 ]; then
-          logger_success "  $pkg installed"
+          log_success "  $pkg installed"
         else
-          logger_error "  Failed to install $pkg"
+          log_error "  Failed to install $pkg"
         fi
       done < "$deps_file"
     fi
@@ -111,7 +111,7 @@ clear_deps() {
   local dir="${1:-.}"
 
   if [ ! -d "$dir" ]; then
-    logger_error "Directory does not exist: $dir"
+    log_error "Directory does not exist: $dir"
     return 1
   fi
 
@@ -119,7 +119,7 @@ clear_deps() {
     cd "$dir" || exit 1
 
     go clean -modcache
-    logger_success "Module cache cleared"
+    log_success "Module cache cleared"
   )
 }
 
@@ -132,7 +132,7 @@ go_build() {
   local output="${2:-bin/voxel-engine}"
 
   if [ ! -d "$dir" ]; then
-    logger_error "Directory does not exist: $dir"
+    log_error "Directory does not exist: $dir"
     return 1
   fi
 
@@ -145,15 +145,15 @@ go_build() {
 
     mkdir -p "$(dirname "$output")"
 
-    logger_info "Building Go binary to $output..."
+    log_info "Building Go binary to $output..."
 
     go build -o "$output" ./src
     local rc=$?
 
     if [ $rc -eq 0 ]; then
-      logger_success "Binary built: $dir/$output"
+      log_success "Binary built: $dir/$output"
     else
-      logger_error "Build failed (exit $rc)"
+      log_error "Build failed (exit $rc)"
       return 1
     fi
   )
@@ -164,14 +164,14 @@ go_run_src() {
   local src_path="${2:-./src}"
 
   if [ ! -d "$dir" ]; then
-    logger_error "Directory does not exist: $dir"
+    log_error "Directory does not exist: $dir"
     return 1
   fi
 
   (
     cd "$dir" || exit 1
 
-    logger_info "Running $src_path directly (dev mode)..."
+    log_info "Running $src_path directly (dev mode)..."
     go run "$src_path"
   )
 }
@@ -181,7 +181,7 @@ go_run_binary() {
   local binary="${2:-bin/voxel-engine}"
 
   if [ ! -d "$dir" ]; then
-    logger_error "Directory does not exist: $dir"
+    log_error "Directory does not exist: $dir"
     return 1
   fi
 
@@ -193,12 +193,12 @@ go_run_binary() {
     fi
 
     if [ ! -f "$binary" ]; then
-      logger_error "Binary not found: $dir/$binary"
-      logger_info "Run 'voxel_engine_build' first"
+      log_error "Binary not found: $dir/$binary"
+      log_info "Run 'voxel_engine_build' first"
       return 1
     fi
 
-    logger_info "Running $binary..."
+    log_info "Running $binary..."
     "./$binary"
   )
 }

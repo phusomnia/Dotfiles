@@ -1,5 +1,6 @@
 ## System
 system_info
+find_port
 
 ## Git
 git_status
@@ -13,6 +14,10 @@ python_info
 python_init_venv
 python_install_requirements
 python_demo_pipeline
+
+## Php
+php_info
+php_demo_pipeline
 
 ## Docker
 docker_info
@@ -70,6 +75,7 @@ debian_install_dotnet
 debian_install_java
 debian_install_nim
 debian_install_go
+debian_install_php
 debian_install_bun
 debian_install_ollama
 debian_install_docker

@@ -13,10 +13,10 @@ voxel_engine_info() {
 }
 
 voxel_engine_init() {
-  logger_info "[Stage 1/4] INIT"
+  log_info "[Stage 1/4] INIT"
 
   if [ -f "$VOXEL_ENGINE_DIR/go.mod" ]; then
-    logger_info "go.mod already exists, skipping init"
+    log_info "go.mod already exists, skipping init"
     return 0
   fi
 
@@ -24,29 +24,29 @@ voxel_engine_init() {
 }
 
 voxel_engine_install() {
-  logger_info "[Stage 2/4] INSTALL"
+  log_info "[Stage 2/4] INSTALL"
   go_install_deps "$VOXEL_ENGINE_DIR" "dependencies"
 }
 
 voxel_engine_build() {
-  logger_info "[Stage 3/4] BUILD"
+  log_info "[Stage 3/4] BUILD"
   go_build "$VOXEL_ENGINE_DIR" "$VOXEL_ENGINE_BIN"
 }
 
 voxel_engine_exec() {
-  logger_info "[Stage 4/4] RUN"
+  log_info "[Stage 4/4] RUN"
   go_run_binary "$VOXEL_ENGINE_DIR" "$VOXEL_ENGINE_BIN"
 }
 
 voxel_engine_run() {
-  logger_info "Starting Voxel Engine pipeline: init -> install -> build -> run"
+  log_info "Starting Voxel Engine pipeline: init -> install -> build -> run"
 
-  voxel_engine_init    || { logger_error "Pipeline failed at INIT";    return 1; }
-  voxel_engine_install || { logger_error "Pipeline failed at INSTALL"; return 1; }
-  voxel_engine_build   || { logger_error "Pipeline failed at BUILD";   return 1; }
-  voxel_engine_exec    || { logger_error "Pipeline failed at RUN";     return 1; }
+  voxel_engine_init    || { log_error "Pipeline failed at INIT";    return 1; }
+  voxel_engine_install || { log_error "Pipeline failed at INSTALL"; return 1; }
+  voxel_engine_build   || { log_error "Pipeline failed at BUILD";   return 1; }
+  voxel_engine_exec    || { log_error "Pipeline failed at RUN";     return 1; }
 
-  logger_success "Pipeline completed"
+  log_success "Pipeline completed"
 }
 
 voxel_engine_clear_deps() {
@@ -54,11 +54,11 @@ voxel_engine_clear_deps() {
 }
 
 voxel_engine_dev() {
-  logger_info "Starting Voxel Engine dev mode: install -> run (go run)"
+  log_info "Starting Voxel Engine dev mode: install -> run (go run)"
 
-  voxel_engine_install || { logger_error "Pipeline failed at INSTALL"; return 1; }
+  voxel_engine_install || { log_error "Pipeline failed at INSTALL"; return 1; }
 
   go_run_src "$VOXEL_ENGINE_DIR" "./src"
 
-  logger_success "Dev session ended"
+  log_success "Dev session ended"
 }

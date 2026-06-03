@@ -31,10 +31,10 @@ voxel_server_info() {
 }
 
 voxel_server_init() {
-  logger_info "[Stage 1/3] INIT"
+  log_info "[Stage 1/3] INIT"
 
   if [ -d "$VOXEL_SERVER_DIR/$VOXEL_SERVER_VENV" ]; then
-    logger_info "venv already exists, skipping init"
+    log_info "venv already exists, skipping init"
     return 0
   fi
 
@@ -42,24 +42,24 @@ voxel_server_init() {
 }
 
 voxel_server_install() {
-  logger_info "[Stage 2/3] INSTALL"
+  log_info "[Stage 2/3] INSTALL"
   python_install_deps "$VOXEL_SERVER_DIR" "$VOXEL_SERVER_VENV" "$VOXEL_SERVER_REQUIREMENTS"
 }
 
 voxel_server_exec() {
-  logger_info "[Stage 3/3] RUN"
+  log_info "[Stage 3/3] RUN"
   python_run_server "$VOXEL_SERVER_DIR" "$VOXEL_SERVER_VENV" \
     "$VOXEL_SERVER_APP" "$VOXEL_SERVER_HOST" "$VOXEL_SERVER_PORT"
 }
 
 voxel_server_run() {
-  logger_info "Starting Voxel Server pipeline: init -> install -> run"
+  log_info "Starting Voxel Server pipeline: init -> install -> run"
 
-  voxel_server_init    || { logger_error "Pipeline failed at INIT";    return 1; }
-  voxel_server_install || { logger_error "Pipeline failed at INSTALL"; return 1; }
-  voxel_server_exec    || { logger_error "Pipeline failed at RUN";     return 1; }
+  voxel_server_init    || { log_error "Pipeline failed at INIT";    return 1; }
+  voxel_server_install || { log_error "Pipeline failed at INSTALL"; return 1; }
+  voxel_server_exec    || { log_error "Pipeline failed at RUN";     return 1; }
 
-  logger_success "Pipeline completed"
+  log_success "Pipeline completed"
 }
 
 voxel_server_clear() {
@@ -67,12 +67,12 @@ voxel_server_clear() {
 }
 
 voxel_server_dev() {
-  logger_info "Starting Voxel Server dev mode: install -> run"
+  log_info "Starting Voxel Server dev mode: install -> run"
 
-  voxel_server_install || { logger_error "Pipeline failed at INSTALL"; return 1; }
+  voxel_server_install || { log_error "Pipeline failed at INSTALL"; return 1; }
 
   python_run_server "$VOXEL_SERVER_DIR" "$VOXEL_SERVER_VENV" \
     "$VOXEL_SERVER_APP" "$VOXEL_SERVER_HOST" "$VOXEL_SERVER_PORT"
 
-  logger_success "Dev session ended"
+  log_success "Dev session ended"
 }
