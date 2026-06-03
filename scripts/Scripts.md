@@ -6,7 +6,7 @@
 scripts/
 ├── Scripts.md           # This file
 ├── kernel/
-│   └── core.sh          # Colors, logger, spinner, platform, terminal utils
+│   └── core.sh          # Colors, Spring Boot-style logger (log_info/log_error/log_warn/log_success/log_debug), spinner, platform, terminal utils
 ├── tui/
 │   ├── ui.sh            # fzf menu UI wrapper
 │   ├── tui_manager.sh   # Two-level category navigator (parses menu.txt)
