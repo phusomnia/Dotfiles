@@ -28,12 +28,12 @@ debian_install_browser() {
   log_success "\nBrowsers installed"
 }
 
-debian_install_code() {
-  log_info "Installing VS Code..."
-  curl -L -o code.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-  sudo dpkg -i code.deb
-  log_success "VS Code installed"
-}
+# debian_install_code() {
+#   log_info "Installing VS Code..."
+#   curl -L -o code.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+#   sudo dpkg -i code.deb
+#   log_success "VS Code installed"
+# }
 
 debian_install_windsurf() {
   log_info "Installing Windsurf..."
@@ -56,7 +56,7 @@ debian_install_network() {
 
 debian_install_terminal() {
   log_info "Installing terminal ..."
-  sudo apt install kitty fish -y
+  sudo apt install kitty fish yq -y
   log_success "Terminal installed"
 }
 
@@ -226,7 +226,7 @@ debian_pipeline() {
   debian_install_wm
   debian_install_audio
   debian_install_browser
-  debian_install_code
+  # debian_install_code
   debian_install_windsurf
   debian_install_network
   debian_install_terminal
@@ -241,7 +241,7 @@ debian_pipeline() {
   debian_install_ollama
   debian_install_docker
   debian_install_deps
-  log_success "Debian provisioning complete!"
+  log_success "Debian complete!"
 }
 
 # dpkg -l | grep <name>

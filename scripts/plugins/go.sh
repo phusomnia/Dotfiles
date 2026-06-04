@@ -1,34 +1,3 @@
-go_demo_pipeline() {
-  local dir="${1:-demo/go}"
-
-  if [ ! -d "$dir" ]; then
-    log_error "Directory does not exist: $dir"
-    return 1
-  fi
-
-  dir="$(realpath "$dir")"
-
-  log_info "Pipeline: $dir — 4 stages"
-
-  # Stage 1: init
-  log_info "Stage 1/4: init — go mod init"
-  go_init_module "$dir" "demo" || return 1
-
-  # Stage 2: install
-  log_info "Stage 2/4: install — go mod tidy"
-  go_install_deps "$dir" "" || return 1
-
-  # Stage 3: build
-  log_info "Stage 3/4: build"
-  go_build "$dir" "bin/demo" || return 1
-
-  # Stage 4: run
-  log_info "Stage 4/4: run"
-  go_run_src "$dir" "./src" || return 1
-
-  log_success "Pipeline complete: $dir"
-}
-
 go_info() {
   echo "Go: $(go version 2>/dev/null || echo 'not installed')"
 }
@@ -201,4 +170,35 @@ go_run_binary() {
     log_info "Running $binary..."
     "./$binary"
   )
+}
+
+go_demo_pipeline() {
+  local dir="${1:-demo/go}"
+
+  if [ ! -d "$dir" ]; then
+    log_error "Directory does not exist: $dir"
+    return 1
+  fi
+
+  dir="$(realpath "$dir")"
+
+  log_info "Pipeline: $dir — 4 stages"
+
+  # Stage 1: init
+  log_info "Stage 1/4: init — go mod init"
+  go_init_module "$dir" "demo" || return 1
+
+  # Stage 2: install
+  log_info "Stage 2/4: install — go mod tidy"
+  go_install_deps "$dir" "" || return 1
+
+  # Stage 3: build
+  log_info "Stage 3/4: build"
+  go_build "$dir" "bin/demo" || return 1
+
+  # Stage 4: run
+  log_info "Stage 4/4: run"
+  go_run_src "$dir" "./src" || return 1
+
+  log_success "Pipeline complete: $dir"
 }

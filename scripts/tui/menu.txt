@@ -12,8 +12,10 @@ git_rename_main
 ## Python
 python_info
 python_init_venv
+python_activate
 python_install_requirements
 python_demo_pipeline
+python_demo_fastapi_pipeline
 
 ## Php
 php_info
@@ -80,5 +82,9 @@ debian_install_bun
 debian_install_ollama
 debian_install_docker
 debian_install_deps
+
+## Java
+java_info
+java_init
 
 exit

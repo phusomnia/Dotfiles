@@ -14,7 +14,7 @@ scripts/
 └── plugins/
     ├── system.sh        # system script
     ├── git.sh           # git script
-    ├── python.sh        # python script
+    ├── python.sh        # python venv, install, pipeline, cross-platform
     ├── docker.sh        # docker script
     ├── nodejs.sh        # nodejs script
     ├── bun.sh           # bun script
@@ -59,3 +59,19 @@ Lines starting with `##` become category items in the top-level fzf menu. Non-bl
 
 1. Add the item name to `menu.txt` under the appropriate `##` category
 2. Define the function in the corresponding plugin file under `scripts/plugins/`
+
+## Cross-platform support (`os_type`)
+
+Defined in `plugins/python.sh`, usable by any sourced plugin:
+
+- `os_type` — detects the current OS: `linux`, `macos`, `windows`, or `unknown`
+
+```bash
+case "$(os_type)" in
+  windows) source "$env_path/Scripts/activate" ;;
+  *)       source "$env_path/bin/activate" ;;
+esac
+```
+
+On **Windows** 
+- (detected via `CYGWIN*|MINGW*|MSYS*` from `uname -s`), Python venvs use `Scripts/` directory; on Unix they use `bin/`. The internal helper `__python_exe()` wraps this to locate `python` / `python.exe` inside a venv, so `python_install_requirements`, `python_fastapi_server`, and `python_demo_pipeline` work without modification on both platforms.
